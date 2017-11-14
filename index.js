@@ -24,3 +24,29 @@ io.on('connection', function(socket){
 
   });
 });
+
+// Listening demo data request
+app.post('/sendOrder', function (req, res) {
+
+	var jsonString = '';
+
+	if (req.method == 'POST') {
+
+        req.on('data', function (data) {
+            jsonString += data;
+        });
+
+        req.on('end', function () {
+            console.log('sending order to clients '+jsonString);
+
+			var jsonObject =JSON.parse(jsonString);
+
+            res.send(jsonObject);
+            
+            io.emit('order_received',jsonObject);
+        });
+
+    }else{
+    	res.send("Please demo request should be POST.");
+    }
+});
